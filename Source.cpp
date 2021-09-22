@@ -3,6 +3,8 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 #include <conio.h>
+#include<windows.h>
+
 using namespace std;
 
 //This should print out the level of every character
@@ -14,21 +16,47 @@ void printLevels(int levels[], string letters[]){
 }
 
 //This should level up one random character
-void lootbox(int levels[], string letters[]) {
-    int loot = rand() % 26;
-    cout << "The '" << letters[loot] << "' went from " << levels[loot] << " to " << levels[loot] + 1 << "!" << endl;
-    levels[loot] = levels[loot] + 1;
-    return;
+void lootbox(int levels[], string letters[], int &money, int &cost) {
+    
+    if (money >= cost){
+        int loot = rand() % 26;
+        cout << "The '" << letters[loot] << "' went from " << levels[loot] << " to " << levels[loot] + 1 << "!" << endl;
+        levels[loot] = levels[loot] + 1;
+        money -= cost;
+        cout << "Thanks for the Alphaether! 5% of all Alphaether spent goes towards supporting letters in need." << endl;
+        cost++;
+        return;
+    }
+    else {
+        cout << "Sorry, you need to spend " << cost << " Alphaether to open a lootbox! Consider enabling in-app purchases." << endl;
+        return;
+    }
 }
 
-int total(int levels[]) {
-    int owned = 0;
+int owned(int levels[]) {
+    int count = 0;
     for (int i = 0; i < 26; i++) {
         if (levels[i] > 0) {
-            owned++;
+            count++;
         }
     }
-    return owned;
+    return count;
+}
+
+int powerLevel(int levels[]) {
+    int count = 0;
+    for (int i = 0; i < 26; i++) {
+        count += levels[i];
+    }
+    return count;
+}
+
+void countdown() {
+    for (int i = 1; i < 11; i++) {
+        cout << "(" << i << "/10) completed" << endl;
+        Sleep(100);
+    }
+    return;
 }
 
 //
@@ -36,6 +64,7 @@ int main()
 {
     cout << "Welcome to..." << endl;
     cout << "THE FINAL ALPHABET WAR" << endl;
+    system("pause");
     srand(time(NULL));
 
     int levels[26] = {};
@@ -43,15 +72,19 @@ int main()
     string userInput;
     char userI;
     int sentinelValue = 0;
+    int money = 0;
+    int cost = 1;
     while (sentinelValue != 1) {
 
         system("CLS");
-        cout << endl;
-        cout << "You own " << total(levels) << " Alphabet Warriors" << endl;
+        cout << "You own " << owned(levels) << " Alphabet Warriors" << endl;
+        cout << "Total Alphabet Power Level: " << powerLevel(levels) << endl;
+        cout << "Alphaether owned: " << money << endl;
         cout << "What do you want to do?" << endl;
         cout << "Type 0 to quit" << endl;
         cout << "Type 1 to check your Alphabet Army's levels" << endl;
-        cout << "Type 2 to open a lootbox" << endl;
+        cout << "Type 2 to open a lootbox (-" << cost << " Alphaether)" << endl;
+        cout << "Type 3 to earn Alphaether" << endl;
         //cin >> userInput;
         //userI = userInput[0];
         userI = _getch();
@@ -67,9 +100,17 @@ int main()
                 system("pause");
                 break;
             case '2':
-                lootbox(levels, letters);
+                lootbox(levels, letters, money, cost);
                 system("pause");
                 break;
+            case '3':
+                money++;
+                cout << "Harvesting Alphaether..." << endl;
+                countdown();
+                cout << "You earned 1 Alphaether!" << endl;
+                system("pause");
+                break;
+                 
         }
     }
 }
