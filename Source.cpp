@@ -7,6 +7,9 @@
 
 using namespace std;
 
+const string qualities[6] = { "Unowned", "Common", "Uncommon", "Rare", "Legendary", "Epic" };
+
+
 //This should print out the level of every character
 void printLevels(int levels[], string letters[]){
     for (int i = 0; i < 26; i++) {
@@ -20,11 +23,47 @@ void lootbox(int levels[], string letters[], int &money, int &cost) {
     
     if (money >= cost){
         int loot = rand() % 26;
-        cout << "The '" << letters[loot] << "' went from " << levels[loot] << " to " << levels[loot] + 1 << "!" << endl;
-        levels[loot] = levels[loot] + 1;
+        int qualityRoll = rand() % 100;
+        int qualityLevel = 0;
+        //Common, Uncommon, Rare, Legendary, Epic
+        //50, 30, 15, 4, 1 
+        if (qualityRoll < 50) {
+            qualityLevel = 1;
+        }
+        else if (qualityRoll < 80) {
+            qualityLevel = 2;
+        }
+        else if (qualityRoll < 95) {
+            qualityLevel = 3;
+        }
+        else if (qualityRoll < 99) {
+            qualityLevel = 4;
+        }
+        else {
+            qualityLevel = 5;
+        }
+
+        if (levels[loot] < qualityLevel) {
+            cout << "Congratulations! You now own a " << qualities[qualityLevel] << " (";
+            for (int i = 0; i < qualityLevel; i++) {
+                cout << "*";
+            }
+            cout << ") " << letters[loot] << "!" << endl;
+            levels[loot] = qualityLevel;
+        }
+        else {
+            cout << "Sorry, you alreay own a higher quality" << letters[loot] << "! Nothing happened." << endl;
+        }
+
+
+
+        //cout << "The '" << letters[loot] << "' went from " << levels[loot] << " to " << levels[loot] + 1 << "!" << endl;
+        //levels[loot] = levels[loot] + 1;
         money -= cost;
-        cout << "Thanks for the Alphaether! 5% of all Alphaether spent goes towards supporting letters in need." << endl;
-        cost++;
+        //cout << "Thanks for the Alphaether! 5% of all Alphaether spent goes towards supporting letters in need." << endl;
+
+        cout << endl;
+        //cost++;
         return;
     }
     else {
@@ -66,7 +105,6 @@ int main()
     cout << "THE FINAL ALPHABET WAR" << endl;
     system("pause");
     srand(time(NULL));
-
     int levels[26] = {};
     string letters[26] = { "Archerstopper" , "Barbarianking" , "Crabmaster", "Demonslayer" , "Elephantrider" , "Firestarter" , "Ghostwalker" , "Hoodwink", "Intransient" , "Jokemaker" , "Killmaker", "Legendkeeper", "Merchant", "Needlesmith", "Orangebender", "Pickpocket", "Quailmonger", "Repairman", "Swordslinger", "Toothgrower", "Understomach", "Vowbreaker", "Wonderbreaker", "Xeviant", "Yelltaker", "Zapmayor"};
     string userInput;
@@ -82,8 +120,8 @@ int main()
         cout << "Alphaether owned: " << money << endl;
         cout << "What do you want to do?" << endl;
         cout << "Type 0 to quit" << endl;
-        cout << "Type 1 to check your Alphabet Army's levels" << endl;
-        cout << "Type 2 to open a lootbox (-" << cost << " Alphaether)" << endl;
+        cout << "Type 1 to check your Alphabet Army" << endl;
+        cout << "Type 2 to summon an Alphabet Warrior (-" << cost << " Alphaether)" << endl;
         cout << "Type 3 to earn Alphaether" << endl;
         //cin >> userInput;
         //userI = userInput[0];
